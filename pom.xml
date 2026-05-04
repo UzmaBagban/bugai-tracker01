@@ -4,6 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <!-- SPRING BOOT PARENT -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/>
+    </parent>
+
     <!-- BASIC PROJECT INFO -->
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,13 +23,7 @@
     <name>BugAI Tracker</name>
     <description>Enterprise Bug Tracking System with AI capabilities</description>
 
-    <!-- SPRING BOOT PARENT -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
-        <relativePath/>
-    </parent>
+
 
     <!-- JAVA & COMMON VERSIONS -->
     <properties>
@@ -29,18 +31,43 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
     </properties>
+    <!-- DEPENDENCY MANAGEMENT (VERSIONS ONLY) -->
+    <dependencyManagement>
+
+        <dependencies>
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>8.0.33</version>
+                <scope>runtime</scope>
+            </dependency>
+
+            <!-- Lombok version managed here -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.30</version>
+                <scope>provided</scope>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
 
     <!-- MODULES (MICROSERVICES) -->
     <modules>
         <module>auth-service</module>
         <module>user-service</module>
         <module>bug-service</module>
-        <module>notification-service</module>
-        <module>ml-service</module>
+
+       <!-- <module>notification-service</module>
+        <module>bug-service</module>
         <module>analytics-service</module>
+        <module>ml-service</module>
         <module>file-service</module>
         <module>search-service</module>
         <module>api-gateway</module>
+
+-->
     </modules>
 
 </project>

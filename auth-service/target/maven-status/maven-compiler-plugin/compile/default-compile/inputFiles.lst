@@ -1,0 +1,10 @@
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\entity\Credentials.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\service\AuthServiceImpl.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\dto\RegisterRequest.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\exception\GlobalExceptionHandler.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\security\SecurityConfig.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\controller\AuthController.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\dto\LoginRequest.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\repository\CredentialsRepository.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\service\AuthService.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\dto\AuthResponse.java
