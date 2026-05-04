@@ -4,6 +4,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+    <!-- SPRING BOOT PARENT -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/>
+    </parent>
+
     <!-- BASIC PROJECT INFO -->
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,13 +23,7 @@
     <name>BugAI Tracker</name>
     <description>Enterprise Bug Tracking System with AI capabilities</description>
 
-    <!-- SPRING BOOT PARENT -->
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.5</version>
-        <relativePath/>
-    </parent>
+
 
     <!-- JAVA & COMMON VERSIONS -->
     <properties>
@@ -31,7 +33,14 @@
     </properties>
     <!-- DEPENDENCY MANAGEMENT (VERSIONS ONLY) -->
     <dependencyManagement>
+
         <dependencies>
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>8.0.33</version>
+                <scope>runtime</scope>
+            </dependency>
 
             <!-- Lombok version managed here -->
             <dependency>
@@ -47,14 +56,17 @@
     <!-- MODULES (MICROSERVICES) -->
     <modules>
         <module>auth-service</module>
+        <module>user-service</module>
         <module>bug-service</module>
+
        <!-- <module>notification-service</module>
-        <module>ml-service</module>
+        <module>bug-service</module>
         <module>analytics-service</module>
+        <module>ml-service</module>
         <module>file-service</module>
         <module>search-service</module>
         <module>api-gateway</module>
-        <module>user-service</module>
+
 -->
     </modules>
 

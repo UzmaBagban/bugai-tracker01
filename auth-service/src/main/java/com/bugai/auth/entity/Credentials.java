@@ -1,51 +1,62 @@
-package entity;
+package com.bugai.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-
+/**
+ * Credentials entity — stored in bug_ai_auth schema.
+ * Holds only authentication data. Profile data lives in User Service.
+ * The UUID here is THE shared key: User Service will store this same UUID
+ * as its primary key (client-sends-UUID flow).
+ */
 @Entity
-@Table(name="credentials")
-@Builder
+@Table(name = "credentials")
 @Data
-@AllArgsConstructor
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+
 public class Credentials {
+
+    // UUID generated here, shared with User Service as the link between services
     @Id
-    @Column(nullable=false,updatable=false)
+    @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(nullable=false,unique = true)
+    // Each user has exactly one email — must be unique
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(nullable=false)
+    // Stored as BCrypt hash — NEVER store plain text passwords
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable=false)
-    private Role role;
+    // Role-based access control: DEVELOPER, ADMIN, MANAGER etc.
+    @Column(name = "role", nullable = false)
+    private String role;
 
-    public enum Role {
-        ROLE_USER,
-        ROLE_ADMIN,
-        ROLE_DEVELOPER,
-        ROLE_TESTER
-    }
-
+    // Soft-delete / account suspension support
+    @Builder.Default  // Lombok builder respects this default value
+    @Column(name = "active", nullable = false)
     private boolean active = true;
 
+    // Audit: when the credentials record was created
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    // Lifecycle hook — sets createdAt before first persist
     @PrePersist
-    public void prePersist()
-    {
-        if(id == null)
-        {
-            id = UUID.randomUUID();
-        }
-        if(role == null){
-            role = Role.ROLE_USER;
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        // If no ID was set externally, generate one (safety net)
+        if (this.id == null) {
+            this.id = UUID.randomUUID();
         }
     }
-
 }

@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.bugai.userservice.UserServiceApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.931 s -- in com.bugai.userservice.UserServiceApplicationTests

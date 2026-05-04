@@ -1,1 +1,12 @@
-java\com\bugai\auth\AuthServiceApplication.class
+com\bugai\auth\security\SecurityConfig.class
+com\bugai\auth\service\AuthService.class
+com\bugai\auth\entity\Credentials$CredentialsBuilder.class
+com\bugai\auth\dto\RegisterRequest.class
+com\bugai\auth\exception\GlobalExceptionHandler.class
+com\bugai\auth\repository\CredentialsRepository.class
+com\bugai\auth\controller\AuthController.class
+com\bugai\auth\dto\AuthResponse.class
+com\bugai\auth\dto\LoginRequest.class
+com\bugai\auth\entity\Credentials.class
+com\bugai\auth\service\AuthServiceImpl.class
+com\bugai\auth\dto\AuthResponse$AuthResponseBuilder.class
