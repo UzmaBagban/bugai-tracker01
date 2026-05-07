@@ -1,149 +1,108 @@
 package com.bugai.userservice.service;
 
 import com.bugai.userservice.dto.*;
-import com.bugai.userservice.entity.*;
+import com.bugai.userservice.entity.User;
 import com.bugai.userservice.exception.*;
-import com.bugai.userservice.repository.*;
-
-import lombok.*;
+import com.bugai.userservice.repository.UserRepository;
+import com.bugai.userservice.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-// @Service goes on the IMPL, not the interface
-// Spring registers this class as the bean
-// When controller asks for UserService (interface), Spring injects this impl automatically
+@Slf4j
 @Service
 @RequiredArgsConstructor
-
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    // injected via @RequiredArgsConstructor — no @Autowired needed
 
-
-    // ─────────────────────────────────────────────────────
-    // CREATE USER
-    // ─────────────────────────────────────────────────────
     @Override
-    public UserResponseDTO createUser(UserRequestDTO dto) {
-
-        // STEP 1: check duplicate email
-        // existsByEmail() → custom repo method → runs: SELECT EXISTS WHERE email = ?
-        // throws IllegalStateException → caught by GlobalExceptionHandler → 400
-        if (userRepository.existsByEmail(dto.getEmail())) {
-            throw new IllegalStateException("Email already exists: " + dto.getEmail());
+    @Transactional
+    public UserResponse createUser(CreateUserRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new DuplicateEmailException("Email already registered: " + request.getEmail());
         }
 
-        // STEP 2: map DTO → Entity
-        // client sent UserRequestDTO, we build a User entity from it
-        // we do NOT set id — @PrePersist on User entity generates UUID
-        // we do NOT set createdAt/updatedAt — @CreationTimestamp/@UpdateTimestamp handle it
         User user = User.builder()
-                .credentialsId(dto.getCredentialsId())
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .email(dto.getEmail())
-                .phone(dto.getPhone())
+                .id(request.getId())           // UUID from auth-service
+                .fullName(request.getFullName())
+                .email(request.getEmail())
+                .role(request.getRole())
                 .build();
 
-        // STEP 3: save to DB → returns saved User with id + timestamps filled in
-        // STEP 4: map Entity → ResponseDTO → return to controller
-        return toResponse(userRepository.save(user));
+        User saved = userRepository.save(user);
+        log.info("User created with id={}", saved.getId());
+        return toResponse(saved);
     }
 
-
-    // ─────────────────────────────────────────────────────
-    // GET BY ID
-    // ─────────────────────────────────────────────────────
     @Override
-    public UserResponseDTO getUserById(UUID id) {
-
-        // findById() returns Optional<User>
-        // orElseThrow() → if empty, throw UserNotFoundException
-        // UserNotFoundException → caught by GlobalExceptionHandler → 404
+    public UserResponse getUserById(UUID id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + id));
-
-        // entity → DTO → return
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
         return toResponse(user);
     }
 
-
-    // ─────────────────────────────────────────────────────
-    // GET ALL USERS
-    // ─────────────────────────────────────────────────────
     @Override
-    public List<UserResponseDTO> getAllUsers() {
+    public UserResponse getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+        return toResponse(user);
+    }
 
-        // findAll() → List<User> (entities)
-        // .stream() → process each element
-        // .map(this::toResponse) → convert each User entity to UserResponseDTO
-        // .toList() → collect back to List<UserResponseDTO>
+    @Override
+    public List<UserResponse> getAllUsers() {
         return userRepository.findAll()
                 .stream()
                 .map(this::toResponse)
-                .toList();
+                .collect(Collectors.toList());
     }
 
-
-    // ─────────────────────────────────────────────────────
-    // UPDATE USER
-    // ─────────────────────────────────────────────────────
     @Override
-    public UserResponseDTO updateUser(UUID id, UserRequestDTO dto) {
-
-        // STEP 1: fetch existing user — throws 404 if not found
+    @Transactional
+    public UserResponse updateUser(UUID id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found: " + id));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
 
-        // STEP 2: update only allowed fields
-        // firstName, lastName, phone → client can change these
-        // email → NOT updated here (needs verification flow)
-        // credentialsId → NEVER changes (links to Auth Service)
-        // createdAt → NEVER changes
-        // updatedAt → @UpdateTimestamp updates it automatically on save
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setPhone(dto.getPhone());
+        user.setFullName(request.getFullName());
+        user.setRole(request.getRole());
 
-        // STEP 3: save → Hibernate detects existing id → runs UPDATE not INSERT
-        return toResponse(userRepository.save(user));
+        User updated = userRepository.save(user);
+        log.info("User updated with id={}", updated.getId());
+        return toResponse(updated);
     }
 
-
-    // ─────────────────────────────────────────────────────
-    // DELETE USER
-    // ─────────────────────────────────────────────────────
     @Override
-    public void deleteUser(UUID id) {
-
-        // existsById() check first — deleteById() silently does nothing if id missing
-        // we want to throw 404 so client knows the id was invalid
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("User not found: " + id);
-        }
-
-        userRepository.deleteById(id);
-        // void return — controller sends 204 No Content
+    @Transactional
+    public void deactivateUser(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+        user.setActive(false);
+        userRepository.save(user);
+        log.info("User deactivated with id={}", id);
     }
 
+    @Override
+    @Transactional
+    public void deleteUser(UUID id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found with id: " + id);
+        }
+        userRepository.deleteById(id);
+        log.info("User deleted with id={}", id);
+    }
 
-    // ─────────────────────────────────────────────────────
-    // PRIVATE MAPPER — Entity → ResponseDTO
-    // ─────────────────────────────────────────────────────
-    // private — only this class uses it
-    // single place where entity → DTO conversion happens
-    // if you add a field later, you update it here only
-    private UserResponseDTO toResponse(User user) {
-        return UserResponseDTO.builder()
+    private UserResponse toResponse(User user) {
+        return UserResponse.builder()
                 .id(user.getId())
-                .credentialsId(user.getCredentialsId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .fullName(user.getFullName())
                 .email(user.getEmail())
-                .phone(user.getPhone())
+                .role(user.getRole())
+                .active(user.isActive())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt())
                 .build();

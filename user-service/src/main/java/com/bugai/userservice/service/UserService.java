@@ -1,23 +1,17 @@
 package com.bugai.userservice.service;
 
-import com.bugai.userservice.dto.UserRequestDTO;
-import com.bugai.userservice.dto.UserResponseDTO;
+import com.bugai.userservice.dto.*;
+
 
 import java.util.List;
 import java.util.UUID;
 
-// Interface defines the CONTRACT — what UserService CAN do
-// Controller depends on this interface, not the implementation
-// Makes unit testing easy — mock this interface, not the real class
 public interface UserService {
-
-    UserResponseDTO createUser(UserRequestDTO dto);
-
-    UserResponseDTO getUserById(UUID id);
-
-    List<UserResponseDTO> getAllUsers();
-
-    UserResponseDTO updateUser(UUID id, UserRequestDTO dto);
-
+    UserResponse createUser(CreateUserRequest request);
+    UserResponse getUserById(UUID id);
+    UserResponse getUserByEmail(String email);
+    List<UserResponse> getAllUsers();
+    UserResponse updateUser(UUID id, UpdateUserRequest request);
+    void deactivateUser(UUID id);
     void deleteUser(UUID id);
 }

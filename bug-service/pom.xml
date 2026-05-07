@@ -9,30 +9,93 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <!-- Bug Service Coordinates -->
     <artifactId>bug-service</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
+    <name>Bug Service</name>
+    <description>Bug tracking and management service for BugAI Tracker</description>
 
     <dependencies>
+        <!-- ============================================ -->
+        <!-- SPRING BOOT STARTERS -->
+        <!-- ============================================ -->
+
+        <!-- Spring Boot Web: REST API support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!-- Spring Boot Data JPA: Database access -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Validation: Bean validation support -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- ============================================ -->
+        <!-- DATABASE -->
+        <!-- ============================================ -->
+
+        <!-- MySQL Driver: JDBC connector for MySQL -->
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- ============================================ -->
+        <!-- UTILITIES -->
+        <!-- ============================================ -->
+
+        <!-- Lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- ============================================ -->
+        <!-- TESTING -->
+        <!-- ============================================ -->
+
+        <!-- Spring Boot Test: Testing support -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- H2 Database: In-memory database for tests -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Spring Boot Maven Plugin: Package as executable JAR -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

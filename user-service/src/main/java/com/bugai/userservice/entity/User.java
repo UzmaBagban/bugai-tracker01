@@ -1,62 +1,51 @@
 package com.bugai.userservice.entity;
 
+import com.bugai.userservice.enums.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "users", schema = "bug_ai_user")
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
-@Entity
-@Table(name = "users")
 public class User {
 
+    // UUID comes FROM auth-service — we don't generate it here
     @Id
-    @Column(nullable=false,unique = true)
-    private UUID id; //SAME GENERATED IN AUTH SERVICE
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
 
-    @NotBlank(message = "first name is required")
-    @Column(nullable = false, length =50)
-    private String firstName;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
-    @NotBlank(message ="Last Name is required")
-    @Column(nullable = false, length =50)
-    private String lastName;
-
-    @Email (message = " Invalid email format")
-    @Column(nullable = false, unique = true, length = 100)
-    @NotBlank(message = "emai; is required")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Pattern(
-            regexp = "^[0-9+]{10,15}$", message = "phone no must contain only digit and optional +")
-    @Column(length =15)
-    private String phone;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
 
-    @Column(nullable = false,updatable = false )
-    private LocalDateTime createdAt;
+    @Column(name = "active", nullable = false)
+    @Builder.Default
+    private boolean active = true;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    public void onCreate(){
-        createdAt = LocalDateTime.now();
-
-        if(id == null){
-            throw new IllegalStateException("User id must come from AuthService");
-        }
-    }
-
     @PreUpdate
-    public void onUpdate(){
-        updatedAt = LocalDateTime.now();
+    public void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
     }
-
-
-
 }
