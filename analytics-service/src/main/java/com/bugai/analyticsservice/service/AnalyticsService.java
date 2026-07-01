@@ -1,184 +1,216 @@
 package com.bugai.analyticsservice.service;
 
+import com.bugai.analyticsservice.dto.AnalyticsRequestDTO;
+import com.bugai.analyticsservice.dto.AnalyticsResponseDTO;
+import com.bugai.analyticsservice.entity.BugAnalytics;
+import com.bugai.analyticsservice.exception.AnalyticsNotFoundException;
+import com.bugai.analyticsservice.repository.BugAnalyticsRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.bugai.analyticsservice.dto.*;
-import com.bugai.analyticsservice.exception.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
- * Service interface for analytics operations.
- *
- * Defines business logic for:
- * - Recording daily analytics snapshots
- * - Retrieving analytics for specific dates or date ranges
- * - Calculating aggregate metrics (totals, averages)
- * - Filtering analytics by project, team, or developer
- *
- * Implementation handles:
- * - Data validation
- * - Entity-DTO conversion
- * - Business rule enforcement
- * - Transaction management
+ * Service implementation for analytics operations.
+ * Provides business logic for analytics calculations and CRUD.
  */
-public interface AnalyticsService {
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class AnalyticsService implements AnalyticsServiceImpl {
+
+    private final BugAnalyticsRepository analyticsRepository;
 
     /**
-     * Create a new analytics record for a specific date.
+     * Create a new analytics record and persist to database.
      *
-     * Typically called at end of day or by a scheduled job to snapshot
-     * the current state of bugs in the system.
-     *
-     * @param request Analytics data to record
-     * @return Created analytics record with generated ID
-     * @throws IllegalArgumentException if request data is invalid
+     * @param requestDTO Contains analytics data to create
+     * @return Created analytics record as DTO
      */
-    AnalyticsResponse createAnalytics(AnalyticsRequest request);
+    @Override
+    public AnalyticsResponseDTO create(AnalyticsRequestDTO requestDTO) {
+        // Build entity from request DTO with auto-generated UUID
+        BugAnalytics analytics = BugAnalytics.builder()
+                .id(UUID.randomUUID().toString())
+                .projectId(requestDTO.getProjectId())
+                .totalBugs(requestDTO.getTotalBugs())
+                .openBugs(requestDTO.getOpenBugs())
+                .closedBugs(requestDTO.getClosedBugs())
+                .avgResolutionTime(requestDTO.getAvgResolutionTime())
+                .criticalBugs(requestDTO.getCriticalBugs())
+                .highBugs(requestDTO.getHighBugs())
+                .mediumBugs(requestDTO.getMediumBugs())
+                .lowBugs(requestDTO.getLowBugs())
+                .build();
+
+        // Persist and convert to DTO
+        BugAnalytics savedAnalytics = analyticsRepository.save(analytics);
+        return toResponse(savedAnalytics);
+    }
 
     /**
-     * Retrieve analytics for a specific date (system-wide).
+     * Retrieve analytics record by ID.
      *
-     * @param analyticsDate The date to retrieve analytics for
-     * @return Analytics for the date if found
-     * @throws com.bugai.analytics.exception.ResourceNotFoundException if not found
+     * @param id UUID of the analytics record
+     * @return Analytics data as DTO
+     * @throws AnalyticsNotFoundException if record doesn't exist
      */
-    AnalyticsResponse getAnalyticsByDate(LocalDate analyticsDate);
+    @Override
+    @Transactional(readOnly = true)
+    public AnalyticsResponseDTO getById(String id) {
+        BugAnalytics analytics = analyticsRepository.findById(id)
+                .orElseThrow(() -> new AnalyticsNotFoundException("Analytics record not found with id: " + id));
+        return toResponse(analytics);
+    }
 
     /**
-     * Retrieve analytics for a specific date and project.
+     * Get the most recent analytics snapshot for a project.
      *
-     * @param analyticsDate The date to retrieve analytics for
-     * @param projectId The project identifier
-     * @return Analytics for the date and project if found
-     * @throws com.bugai.analytics.exception.ResourceNotFoundException if not found
+     * @param projectId UUID of the project
+     * @return Latest analytics record as DTO
+     * @throws AnalyticsNotFoundException if no records exist for the project
      */
-    AnalyticsResponse getAnalyticsByDateAndProject(LocalDate analyticsDate, String projectId);
+    @Override
+    @Transactional(readOnly = true)
+    public AnalyticsResponseDTO getLatestByProject(String projectId) {
+        BugAnalytics analytics = analyticsRepository.findLatestByProjectId(projectId)
+                .orElseThrow(() -> new AnalyticsNotFoundException("No analytics found for project: " + projectId));
+        return toResponse(analytics);
+    }
 
     /**
-     * Retrieve analytics for a specific date and team.
+     * Retrieve analytics records within a specified date range for a project.
      *
-     * @param analyticsDate The date to retrieve analytics for
-     * @param teamId The team identifier
-     * @return Analytics for the date and team if found
-     * @throws com.bugai.analytics.exception.ResourceNotFoundException if not found
+     * @param projectId UUID of the project
+     * @param startDate Start of range (inclusive)
+     * @param endDate End of range (inclusive)
+     * @return List of analytics records ordered by date (ascending)
      */
-    AnalyticsResponse getAnalyticsByDateAndTeam(LocalDate analyticsDate, String teamId);
+    @Override
+    @Transactional(readOnly = true)
+    public List<AnalyticsResponseDTO> getAnalyticsByDateRange(String projectId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<BugAnalytics> analyticsList = analyticsRepository.findByProjectIdAndDateRange(projectId, startDate, endDate);
+        return analyticsList.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
 
     /**
-     * Retrieve analytics for a specific date and developer.
+     * Get the most recent analytics records (last N days) for a project.
+     * Useful for trending and recent performance analysis.
      *
-     * @param analyticsDate The date to retrieve analytics for
-     * @param developerUuid The developer's UUID
-     * @return Analytics for the date and developer if found
-     * @throws com.bugai.analytics.exception.ResourceNotFoundException if not found
+     * @param projectId UUID of the project
+     * @param days Number of days to look back
+     * @return List of recent analytics records (most recent first)
      */
-    AnalyticsResponse getAnalyticsByDateAndDeveloper(LocalDate analyticsDate, String developerUuid);
+    @Override
+    @Transactional(readOnly = true)
+    public List<AnalyticsResponseDTO> getRecentAnalytics(String projectId, Integer days) {
+        List<BugAnalytics> analyticsList = analyticsRepository.findRecentAnalytics(projectId, days);
+        return analyticsList.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
 
     /**
-     * Retrieve all analytics within a date range (system-wide).
+     * Calculate average number of open bugs over a time period.
+     * Useful for workload planning and sprint capacity estimation.
      *
-     * Used for trend analysis, monthly reports, and historical data visualization.
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records ordered by date, empty list if none found
+     * @param projectId UUID of the project
+     * @param startDate Start of analysis period
+     * @param endDate End of analysis period
+     * @return Average open bug count as Double
      */
-    List<AnalyticsResponse> getAnalyticsInRange(LocalDate startDate, LocalDate endDate);
+    @Override
+    @Transactional(readOnly = true)
+    public Double getAvgOpenBugs(String projectId, LocalDateTime startDate, LocalDateTime endDate) {
+        return analyticsRepository.calculateAvgOpenBugs(projectId, startDate, endDate);
+    }
 
     /**
-     * Retrieve analytics for a specific project within a date range.
+     * Get resolution time trend over a period.
+     * Shows how quickly bugs are being resolved over time.
      *
-     * @param projectId The project identifier
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records for the project, ordered by date
+     * @param projectId UUID of the project
+     * @param startDate Start of analysis period
+     * @param endDate End of analysis period
+     * @return List of analytics records showing resolution time progression
      */
-    List<AnalyticsResponse> getAnalyticsByProjectInRange(
-            String projectId,
-            LocalDate startDate,
-            LocalDate endDate
-    );
-
-    /**
-     * Retrieve analytics for a specific team within a date range.
-     *
-     * @param teamId The team identifier
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records for the team, ordered by date
-     */
-    List<AnalyticsResponse> getAnalyticsByTeamInRange(
-            String teamId,
-            LocalDate startDate,
-            LocalDate endDate
-    );
-
-    /**
-     * Retrieve analytics for a specific developer within a date range.
-     *
-     * @param developerUuid The developer's UUID
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records for the developer, ordered by date
-     */
-    List<AnalyticsResponse> getAnalyticsByDeveloperInRange(
-            String developerUuid,
-            LocalDate startDate,
-            LocalDate endDate
-    );
+    @Override
+    @Transactional(readOnly = true)
+    public List<AnalyticsResponseDTO> getResolutionTimeTrend(String projectId, LocalDateTime startDate, LocalDateTime endDate) {
+        List<BugAnalytics> analyticsList = analyticsRepository.getResolutionTimeTrend(projectId, startDate, endDate);
+        return analyticsList.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Update an existing analytics record.
      *
-     * Used to correct or update analytics data after initial recording.
-     *
-     * @param id The ID of the analytics record to update
-     * @param request Updated analytics data
-     * @return Updated analytics record
-     * @throws com.bugai.analytics.exception.ResourceNotFoundException if ID not found
+     * @param id UUID of the record to update
+     * @param requestDTO New analytics data
+     * @return Updated analytics record as DTO
+     * @throws AnalyticsNotFoundException if record doesn't exist
      */
-    AnalyticsResponse updateAnalytics(Long id, AnalyticsRequest request);
+    @Override
+    public AnalyticsResponseDTO update(String id, AnalyticsRequestDTO requestDTO) {
+        BugAnalytics analytics = analyticsRepository.findById(id)
+                .orElseThrow(() -> new AnalyticsNotFoundException("Analytics record not found with id: " + id));
+
+        // Update fields from request DTO
+        analytics.setProjectId(requestDTO.getProjectId());
+        analytics.setTotalBugs(requestDTO.getTotalBugs());
+        analytics.setOpenBugs(requestDTO.getOpenBugs());
+        analytics.setClosedBugs(requestDTO.getClosedBugs());
+        analytics.setAvgResolutionTime(requestDTO.getAvgResolutionTime());
+        analytics.setCriticalBugs(requestDTO.getCriticalBugs());
+        analytics.setHighBugs(requestDTO.getHighBugs());
+        analytics.setMediumBugs(requestDTO.getMediumBugs());
+        analytics.setLowBugs(requestDTO.getLowBugs());
+
+        BugAnalytics updatedAnalytics = analyticsRepository.save(analytics);
+        return toResponse(updatedAnalytics);
+    }
 
     /**
-     * Delete an analytics record.
+     * Delete an analytics record by ID.
      *
-     * Typically used to remove erroneous or duplicate analytics entries.
-     *
-     * @param id The ID of the analytics record to delete
-     * @throws com.bugai.analytics.exception.ResourceNotFoundException if ID not found
+     * @param id UUID of the record to delete
+     * @throws AnalyticsNotFoundException if record doesn't exist
      */
-    void deleteAnalytics(Long id);
+    @Override
+    public void delete(String id) {
+        BugAnalytics analytics = analyticsRepository.findById(id)
+                .orElseThrow(() -> new AnalyticsNotFoundException("Analytics record not found with id: " + id));
+        analyticsRepository.delete(analytics);
+    }
 
     /**
-     * Calculate total bugs opened within a date range.
+     * Private helper to convert BugAnalytics entity to AnalyticsResponseDTO.
+     * Ensures consistent mapping across all service methods (DRY principle).
      *
-     * Aggregates across all analytics records in the range.
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return Total number of bugs opened in the range
+     * @param analytics Entity to convert
+     * @return Corresponding response DTO
      */
-    Long getTotalBugsOpenedInRange(LocalDate startDate, LocalDate endDate);
-
-    /**
-     * Calculate total bugs closed within a date range.
-     *
-     * Aggregates across all analytics records in the range.
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return Total number of bugs closed in the range
-     */
-    Long getTotalBugsClosedInRange(LocalDate startDate, LocalDate endDate);
-
-    /**
-     * Calculate average resolution time across a date range.
-     *
-     * Computes mean resolution time from all records with valid data.
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return Average resolution time in hours, or null if no data
-     */
-    Double getAverageResolutionTimeInRange(LocalDate startDate, LocalDate endDate);
+    private AnalyticsResponseDTO toResponse(BugAnalytics analytics) {
+        return AnalyticsResponseDTO.builder()
+                .id(analytics.getId())
+                .projectId(analytics.getProjectId())
+                .totalBugs(analytics.getTotalBugs())
+                .openBugs(analytics.getOpenBugs())
+                .closedBugs(analytics.getClosedBugs())
+                .avgResolutionTime(analytics.getAvgResolutionTime())
+                .criticalBugs(analytics.getCriticalBugs())
+                .highBugs(analytics.getHighBugs())
+                .mediumBugs(analytics.getMediumBugs())
+                .lowBugs(analytics.getLowBugs())
+                .createdAt(analytics.getCreatedAt())
+                .updatedAt(analytics.getUpdatedAt())
+                .build();
+    }
 }

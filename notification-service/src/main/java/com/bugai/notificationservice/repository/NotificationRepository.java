@@ -1,8 +1,9 @@
 package com.bugai.notificationservice.repository;
 
-
 import com.bugai.notificationservice.entity.Notification;
-import com.bugai.notificationservice.enums.*;
+import com.bugai.notificationservice.enums.NotificationChannel;
+import com.bugai.notificationservice.enums.NotificationStatus;
+import com.bugai.notificationservice.enums.NotificationType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,100 +11,45 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
-/**
- * Repository interface for Notification entity.
- *
- * Provides CRUD operations and custom queries for notification management,
- * retrieval by user, status filtering, and retry handling.
- */
 @Repository
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
+public interface NotificationRepository extends JpaRepository<Notification, UUID> {
 
-    /**
-     * Find all notifications for a specific recipient.
-     * Ordered by creation date descending (newest first).
-     *
-     * Used for fetching a user's notification history.
-     */
-    List<Notification> findByRecipientIdOrderByCreatedAtDesc(String recipientId);
+    // Find all notifications for a specific user
+    List<Notification> findByUserId(UUID userId);
 
-    /**
-     * Find all unread in-app notifications for a specific recipient.
-     * Only applicable for IN_APP channel.
-     *
-     * Used for displaying the notification badge count in the UI.
-     */
-    List<Notification> findByRecipientIdAndChannelAndReadFalseOrderByCreatedAtDesc(
-            String recipientId,
-            NotificationChannel channel
-    );
+    // Find all notifications for a user with a specific status
+    List<Notification> findByUserIdAndStatus(UUID userId, NotificationStatus status);
 
-    /**
-     * Find all notifications with a specific status.
-     *
-     * Used for background jobs that process PENDING or FAILED notifications.
-     */
+    // Find all notifications for a user by channel
+    List<Notification> findByUserIdAndChannel(UUID userId, NotificationChannel channel);
+
+    // Find all notifications related to a specific bug
+    List<Notification> findByBugId(UUID bugId);
+
+    // Find all pending notifications (not yet sent)
     List<Notification> findByStatus(NotificationStatus status);
 
-    /**
-     * Find all notifications of a specific type for a recipient.
-     *
-     * Useful for analytics or filtering notifications by category.
-     */
-    List<Notification> findByRecipientIdAndType(String recipientId, NotificationType type);
+    // Find all failed notifications that can be retried
+    @Query("SELECT n FROM Notification n WHERE n.status = com.bugai.notificationservice.enums.NotificationStatus.FAILED AND n.retryCount < 3")
+    List<Notification> findFailedNotificationsForRetry();
 
-    /**
-     * Find all pending notifications that have exceeded retry count threshold.
-     *
-     * Custom query to identify notifications that have failed multiple times
-     * and should be moved to FAILED status.
-     */
-    @Query("SELECT n FROM Notification n WHERE n.status = :status AND n.retryCount >= :maxRetries")
-    List<Notification> findByStatusAndRetryCountGreaterThanEqual(
-            @Param("status") NotificationStatus status,
-            @Param("maxRetries") Integer maxRetries
+    // Find notifications created within a specific time range
+    @Query("SELECT n FROM Notification n WHERE n.userId = :userId AND n.createdAt BETWEEN :startTime AND :endTime")
+    List<Notification> findNotificationsInTimeRange(
+            @Param("userId") UUID userId,
+            @Param("startTime") LocalDateTime startTime,
+            @Param("endTime") LocalDateTime endTime
     );
 
-    /**
-     * Find all pending notifications older than a specific time.
-     *
-     * Used to identify stuck notifications that need retry or cleanup.
-     */
-    @Query("SELECT n FROM Notification n WHERE n.status = :status AND n.createdAt < :cutoffTime")
-    List<Notification> findStuckNotifications(
-            @Param("status") NotificationStatus status,
-            @Param("cutoffTime") LocalDateTime cutoffTime
-    );
+    // Find all unread notifications for a user (status = DELIVERED, not yet READ)
+    @Query("SELECT n FROM Notification n WHERE n.userId = :userId AND n.status = com.bugai.notificationservice.enums.NotificationStatus.DELIVERED")
+    List<Notification> findUnreadNotifications(@Param("userId") UUID userId);
 
-    /**
-     * Find all notifications related to a specific entity.
-     *
-     * E.g., find all notifications related to a particular bug.
-     */
-    List<Notification> findByRelatedEntityIdAndRelatedEntityType(
-            String relatedEntityId,
-            String relatedEntityType
-    );
+    // Count total notifications for a user
+    Long countByUserId(UUID userId);
 
-    /**
-     * Count unread in-app notifications for a user.
-     *
-     * Used for displaying notification badge count in the UI.
-     */
-    Long countByRecipientIdAndChannelAndReadFalse(
-            String recipientId,
-            NotificationChannel channel
-    );
-
-    /**
-     * Find notifications by recipient, channel, and status.
-     *
-     * Useful for debugging delivery issues or generating reports.
-     */
-    List<Notification> findByRecipientIdAndChannelAndStatus(
-            String recipientId,
-            NotificationChannel channel,
-            NotificationStatus status
-    );
+    // Count pending notifications for a user
+    Long countByUserIdAndStatus(UUID userId, NotificationStatus status);
 }

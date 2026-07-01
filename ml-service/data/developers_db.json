@@ -1,0 +1,28 @@
+{
+  "developers": [
+    {
+      "developer_id": "dev-001",
+      "name": "Alice Kumar",
+      "skills": ["Java", "Spring Boot", "MySQL"],
+      "current_workload": 2,
+      "performance_rating": 90,
+      "experience_level": "Senior"
+    },
+    {
+      "developer_id": "dev-002",
+      "name": "Bob Singh",
+      "skills": ["React", "JavaScript", "CSS"],
+      "current_workload": 4,
+      "performance_rating": 75,
+      "experience_level": "Mid"
+    },
+    {
+      "developer_id": "dev-003",
+      "name": "Carol Patel",
+      "skills": ["Java", "Kafka", "Docker"],
+      "current_workload": 1,
+      "performance_rating": 88,
+      "experience_level": "Senior"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+com\bugai\analyticsservice\exception\GlobalExceptionHandler.class
+com\bugai\analyticsservice\service\AnalyticsService.class
+com\bugai\analyticsservice\exception\AnalyticsNotFoundException.class
+com\bugai\analyticsservice\entity\BugAnalytics.class
+com\bugai\analyticsservice\exception\ResourceNotFoundException.class
+com\bugai\analyticsservice\repository\BugAnalyticsRepository.class
+com\bugai\analyticsservice\AnalyticsServiceApplication.class
+com\bugai\analyticsservice\dto\AnalyticsResponseDTO.class
+com\bugai\analyticsservice\dto\AnalyticsRequestDTO.class
+com\bugai\analyticsservice\controller\AnalyticsController.class
+com\bugai\analyticsservice\dto\AnalyticsRequestDTO$AnalyticsRequestDTOBuilder.class
+com\bugai\analyticsservice\dto\AnalyticsResponseDTO$AnalyticsResponseDTOBuilder.class
+com\bugai\analyticsservice\entity\BugAnalytics$BugAnalyticsBuilder.class
+com\bugai\analyticsservice\service\AnalyticsServiceImpl.class

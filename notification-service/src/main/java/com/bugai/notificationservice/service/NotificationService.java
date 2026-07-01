@@ -1,102 +1,45 @@
 package com.bugai.notificationservice.service;
 
+import com.bugai.notificationservice.dto.NotificationRequest;
+import com.bugai.notificationservice.dto.NotificationResponse;
+import com.bugai.notificationservice.enums.NotificationStatus;
 
-import com.bugai.notificationservice.dto.*;
-import com.bugai.notification.model.NotificationChannel;
-import com.bugai.notification.model.NotificationStatus;
-
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
-/**
- * Service interface for notification management operations.
- *
- * Defines the contract for creating, retrieving, updating, and delivering notifications.
- */
 public interface NotificationService {
 
-    /**
-     * Create a new notification.
-     *
-     * @param request The notification details
-     * @return The created notification
-     */
+    // Create a new notification
     NotificationResponse createNotification(NotificationRequest request);
 
-    /**
-     * Get a notification by its ID.
-     *
-     * @param id The notification ID
-     * @return The notification details
-     */
-    NotificationResponse getNotificationById(Long id);
+    // Retrieve a notification by ID
+    NotificationResponse getNotificationById(UUID id);
 
-    /**
-     * Get all notifications for a specific recipient.
-     *
-     * @param recipientId The user's UUID
-     * @return List of notifications
-     */
-    List<NotificationResponse> getNotificationsByRecipient(String recipientId);
+    // Retrieve all notifications for a specific user
+    List<NotificationResponse> getNotificationsByUserId(UUID userId);
 
-    /**
-     * Get all unread in-app notifications for a recipient.
-     *
-     * @param recipientId The user's UUID
-     * @return List of unread notifications
-     */
-    List<NotificationResponse> getUnreadNotifications(String recipientId);
+    // Retrieve unread notifications for a user
+    List<NotificationResponse> getUnreadNotifications(UUID userId);
 
-    /**
-     * Mark a notification as read.
-     *
-     * @param id The notification ID
-     * @return The updated notification
-     */
-    NotificationResponse markAsRead(Long id);
+    // Retrieve notifications for a bug
+    List<NotificationResponse> getNotificationsByBugId(UUID bugId);
 
-    /**
-     * Mark all notifications as read for a recipient.
-     *
-     * @param recipientId The user's UUID
-     */
-    void markAllAsRead(String recipientId);
+    // Retrieve pending notifications (not yet sent)
+    List<NotificationResponse> getPendingNotifications();
 
-    /**
-     * Delete a notification by ID.
-     *
-     * @param id The notification ID
-     */
-    void deleteNotification(Long id);
+    // Update notification status (e.g., mark as READ, SENT, FAILED)
+    NotificationResponse updateNotificationStatus(UUID id, NotificationStatus status);
 
-    /**
-     * Get count of unread notifications for a recipient.
-     *
-     * @param recipientId The user's UUID
-     * @return Count of unread notifications
-     */
-    Long getUnreadCount(String recipientId);
+    // Retry sending failed notifications
+    List<NotificationResponse> retryFailedNotifications();
 
-    /**
-     * Process pending notifications and attempt delivery.
-     * Called by scheduled job.
-     *
-     * @return Number of notifications processed
-     */
-    int processPendingNotifications();
+    // Delete a notification (hard delete)
+    void deleteNotification(UUID id);
 
-    /**
-     * Retry failed notifications.
-     * Called by scheduled job.
-     *
-     * @return Number of notifications retried
-     */
-    int retryFailedNotifications();
+    // Get notifications created within a time range for a user
+    List<NotificationResponse> getNotificationsInTimeRange(UUID userId, LocalDateTime startTime, LocalDateTime endTime);
 
-    /**
-     * Get all notifications by status.
-     *
-     * @param status The notification status
-     * @return List of notifications
-     */
-    List<NotificationResponse> getNotificationsByStatus(NotificationStatus status);
+    // Get count of pending notifications for a user (useful for dashboard)
+    Long getPendingNotificationCount(UUID userId);
 }

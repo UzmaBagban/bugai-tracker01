@@ -1,1 +1,13 @@
-C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\user-service\src\main\java\com\bugai\userservice\UserServiceApplication.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\exception\DuplicateEmailException.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\dto\UpdateUserRequest.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\enums\Role.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\repository\UserRepository.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\controller\UserController.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\entity\User.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\exception\GlobalExceptionHandler.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\exception\UserNotFoundException.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\service\UserServiceImpl.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\dto\UserResponse.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\service\UserService.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\dto\CreateUserRequest.java
+C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\UserServiceApplication.java

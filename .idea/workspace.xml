@@ -5,36 +5,98 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3fc0711-e1ac-49c9-9053-d4c90ebee3c6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/controller/AnalyticsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/dto/AnalyticsRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/dto/AnalyticsResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/entity/BugAnalytics.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/exception/ResourceNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/repository/BugAnalyticsRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/service/AnalyticsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/service/AnalyticsServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/dto/NotificationRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/dto/NotificationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/entity/Notification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationChannel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/exception/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/exception/NotificationNotFoundException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/repository/NotificationRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/service/NotificationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/exception/AnalyticsNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/controller/FileController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/dto/FileRecordDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/dto/FileUploadRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/entity/FileRecord.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/enums/FileType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/exception/FileNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/exception/FileSizeExceededException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/exception/FileStorageException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/repository/FileRecordRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/service/FileService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/file-service/src/main/java/com/bugai/fileservice/service/FileServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ml-service/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ml-service/config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ml-service/data/developers_db.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ml-service/data/resolution_time_training.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ml-service/models/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ml-service/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/controller/NotificationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/exception/InvalidNotificationRequestException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/service/NotificationServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/controller/AnalyticsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/controller/AnalyticsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/dto/AnalyticsRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/dto/AnalyticsRequestDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/dto/AnalyticsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/dto/AnalyticsResponseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/entity/BugAnalytics.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/entity/BugAnalytics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/repository/BugAnalyticsRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/repository/BugAnalyticsRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/service/AnalyticsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/service/AnalyticsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/service/AnalyticsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/java/com/bugai/analyticsservice/service/AnalyticsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/auth-service-1.0.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/auth-service-1.0.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/auth-service-1.0.0-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/auth-service-1.0.0-SNAPSHOT.jar.original" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/bug-service-1.0.0-SNAPSHOT.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/bug-service-1.0.0-SNAPSHOT.jar.original" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/maven-archiver/pom.properties" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/maven-archiver/pom.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/surefire-reports/TEST-com.bugai.bugservice.BugServiceApplicationTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/surefire-reports/TEST-com.bugai.bugservice.BugServiceApplicationTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bug-service/target/surefire-reports/com.bugai.bugservice.BugServiceApplicationTests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/bug-service/target/surefire-reports/com.bugai.bugservice.BugServiceApplicationTests.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/dto/NotificationRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/dto/NotificationRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/dto/NotificationResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/dto/NotificationResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/entity/Notification.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/entity/Notification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationChannel.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationChannel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationType.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/enums/NotificationType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/exception/NotificationNotFoundException.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/exception/NotificationNotFoundException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/repository/NotificationRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/repository/NotificationRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/service/NotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/java/com/bugai/notificationservice/service/NotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/notification-service/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/classes/com/bugai/userservice/dto/UserResponseDTO$UserResponseDTOBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/classes/com/bugai/userservice/dto/UserResponseDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/classes/com/bugai/userservice/exception/ErrorResponse$ErrorResponseBuilder.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/classes/com/bugai/userservice/exception/ErrorResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/surefire-reports/TEST-com.bugai.userservice.UserServiceApplicationTests.xml" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/surefire-reports/TEST-com.bugai.userservice.UserServiceApplicationTests.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/surefire-reports/com.bugai.userservice.UserServiceApplicationTests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/surefire-reports/com.bugai.userservice.UserServiceApplicationTests.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/user-service-1.0.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/user-service-1.0.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user-service/target/user-service-1.0.0-SNAPSHOT.jar.original" beforeDir="false" afterPath="$PROJECT_DIR$/user-service/target/user-service-1.0.0-SNAPSHOT.jar.original" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -65,6 +127,9 @@
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2
 }</component>
@@ -94,6 +159,7 @@
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/uzma/OneDrive/Desktop/BugAI Tracker - Copy/pom.xml&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -106,6 +172,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\ml-service\data" />
       <recent name="C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy" />
       <recent name="C:\Users\uzma\OneDrive\Desktop\BugAI Tracker - Copy\user-service\src\main\java\com\bugai\userservice\docs" />
       <recent name="C:\Users\uzma\OneDrive\Desktop\BugAI Tracker\auth-service\src\main\java\com\bugai\auth\security" />
@@ -133,7 +200,7 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.BugServiceApplication">
+  <component name="RunManager" selected="Spring Boot.AuthServiceApplication">
     <configuration name="AnalyticsServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="analytics-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.bugai.analyticsservice.AnalyticsServiceApplication" />
@@ -157,6 +224,14 @@
     <configuration name="BugServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="bug-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.bugai.bugservice.BugServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FileServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="file-service" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.bugai.fileservice.FileServiceApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -203,7 +278,13 @@
       <workItem from="1777906346110" duration="6877000" />
       <workItem from="1778142082518" duration="6254000" />
       <workItem from="1778151807864" duration="1191000" />
-      <workItem from="1778247982506" duration="2879000" />
+      <workItem from="1778247982506" duration="4500000" />
+      <workItem from="1781255304285" duration="1481000" />
+      <workItem from="1782549762687" duration="3914000" />
+      <workItem from="1782554550613" duration="2749000" />
+      <workItem from="1782575358156" duration="1891000" />
+      <workItem from="1782577281494" duration="1934000" />
+      <workItem from="1782890428108" duration="72000" />
     </task>
     <servers />
   </component>

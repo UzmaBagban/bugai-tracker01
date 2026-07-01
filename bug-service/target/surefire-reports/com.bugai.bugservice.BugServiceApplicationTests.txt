@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.bugai.bugservice.BugServiceApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.371 s -- in com.bugai.bugservice.BugServiceApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.690 s -- in com.bugai.bugservice.BugServiceApplicationTests

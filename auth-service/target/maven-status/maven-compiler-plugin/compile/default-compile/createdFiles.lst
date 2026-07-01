@@ -1,7 +1,9 @@
+com\bugai\auth\AuthServiceApplication.class
 com\bugai\auth\security\SecurityConfig.class
 com\bugai\auth\service\AuthService.class
 com\bugai\auth\entity\Credentials$CredentialsBuilder.class
 com\bugai\auth\dto\RegisterRequest.class
+org\example\Main.class
 com\bugai\auth\exception\GlobalExceptionHandler.class
 com\bugai\auth\repository\CredentialsRepository.class
 com\bugai\auth\controller\AuthController.class

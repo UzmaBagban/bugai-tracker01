@@ -1,198 +1,87 @@
 package com.bugai.analyticsservice.repository;
 
-
 import com.bugai.analyticsservice.entity.BugAnalytics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository interface for BugAnalytics entity.
- *
- * Provides data access methods for analytics operations including:
- * - CRUD operations (inherited from JpaRepository)
- * - Custom queries for date-range analytics
- * - Project, team, and developer-specific analytics retrieval
- * - Time-series data for trend analysis
- *
- * Spring Data JPA auto-implements all methods at runtime.
+ * Repository for BugAnalytics entity.
+ * Provides JPQL custom queries for analytics calculations.
  */
 @Repository
-public interface BugAnalyticsRepository extends JpaRepository<BugAnalytics, Long> {
+public interface BugAnalyticsRepository extends JpaRepository<BugAnalytics, String> {
 
     /**
-     * Find analytics for a specific date (system-wide).
+     * Find the most recent analytics record for a specific project.
      *
-     * Used for retrieving daily snapshots when no specific project/team filter is needed.
-     *
-     * @param analyticsDate The date to retrieve analytics for
-     * @return Optional containing analytics if found, empty otherwise
+     * @param projectId UUID of the project
+     * @return Optional containing the latest analytics record, or empty if none exist
      */
-    Optional<BugAnalytics> findByAnalyticsDate(LocalDate analyticsDate);
+    @Query("SELECT ba FROM BugAnalytics ba WHERE ba.projectId = :projectId ORDER BY ba.createdAt DESC LIMIT 1")
+    Optional<BugAnalytics> findLatestByProjectId(@Param("projectId") String projectId);
 
     /**
-     * Find analytics for a specific date and project.
+     * Find all analytics records for a project within a date range.
      *
-     * Used for project-specific daily reports.
-     *
-     * @param analyticsDate The date to retrieve analytics for
-     * @param projectId The project identifier
-     * @return Optional containing analytics if found, empty otherwise
+     * @param projectId UUID of the project
+     * @param startDate Start of the time range (inclusive)
+     * @param endDate End of the time range (inclusive)
+     * @return List of analytics records in ascending chronological order
      */
-    Optional<BugAnalytics> findByAnalyticsDateAndProjectId(
-            LocalDate analyticsDate,
-            String projectId
-    );
+    @Query("SELECT ba FROM BugAnalytics ba WHERE ba.projectId = :projectId " +
+            "AND ba.createdAt >= :startDate AND ba.createdAt <= :endDate " +
+            "ORDER BY ba.createdAt ASC")
+    List<BugAnalytics> findByProjectIdAndDateRange(
+            @Param("projectId") String projectId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 
     /**
-     * Find analytics for a specific date and team.
+     * Find all analytics records created in the last N days for a project.
      *
-     * Used for team-specific daily reports.
-     *
-     * @param analyticsDate The date to retrieve analytics for
-     * @param teamId The team identifier
-     * @return Optional containing analytics if found, empty otherwise
+     * @param projectId UUID of the project
+     * @param days Number of days to look back
+     * @return List of analytics records
      */
-    Optional<BugAnalytics> findByAnalyticsDateAndTeamId(
-            LocalDate analyticsDate,
-            String teamId
-    );
+    @Query("SELECT ba FROM BugAnalytics ba WHERE ba.projectId = :projectId " +
+            "AND ba.createdAt >= CURRENT_TIMESTAMP - :days DAY " +
+            "ORDER BY ba.createdAt DESC")
+    List<BugAnalytics> findRecentAnalytics(@Param("projectId") String projectId, @Param("days") Integer days);
 
     /**
-     * Find analytics for a specific date and developer.
+     * Calculate average open bug count over a period for a project.
      *
-     * Used for individual developer performance tracking.
-     *
-     * @param analyticsDate The date to retrieve analytics for
-     * @param developerUuid The developer's UUID
-     * @return Optional containing analytics if found, empty otherwise
+     * @param projectId UUID of the project
+     * @param startDate Start of the time range
+     * @param endDate End of the time range
+     * @return Average number of open bugs
      */
-    Optional<BugAnalytics> findByAnalyticsDateAndDeveloperUuid(
-            LocalDate analyticsDate,
-            String developerUuid
-    );
+    @Query("SELECT AVG(ba.openBugs) FROM BugAnalytics ba WHERE ba.projectId = :projectId " +
+            "AND ba.createdAt >= :startDate AND ba.createdAt <= :endDate")
+    Double calculateAvgOpenBugs(
+            @Param("projectId") String projectId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 
     /**
-     * Find all analytics within a date range, ordered by date ascending.
+     * Get the trend of resolution time over a period.
      *
-     * Used for:
-     * - Time-series trend analysis
-     * - Monthly/quarterly/yearly reports
-     * - Historical data visualization
-     *
-     * Returns data from startDate (inclusive) to endDate (inclusive).
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records ordered by date
+     * @param projectId UUID of the project
+     * @param startDate Start of the time range
+     * @param endDate End of the time range
+     * @return List of analytics records showing resolution time trend
      */
-    List<BugAnalytics> findByAnalyticsDateBetweenOrderByAnalyticsDateAsc(
-            LocalDate startDate,
-            LocalDate endDate
-    );
-
-    /**
-     * Find all analytics for a specific project within a date range.
-     *
-     * Used for project-specific trend reports and performance tracking.
-     *
-     * @param projectId The project identifier
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records for the project, ordered by date
-     */
-    List<BugAnalytics> findByProjectIdAndAnalyticsDateBetweenOrderByAnalyticsDateAsc(
-            String projectId,
-            LocalDate startDate,
-            LocalDate endDate
-    );
-
-    /**
-     * Find all analytics for a specific team within a date range.
-     *
-     * Used for team performance tracking and capacity planning.
-     *
-     * @param teamId The team identifier
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records for the team, ordered by date
-     */
-    List<BugAnalytics> findByTeamIdAndAnalyticsDateBetweenOrderByAnalyticsDateAsc(
-            String teamId,
-            LocalDate startDate,
-            LocalDate endDate
-    );
-
-    /**
-     * Find all analytics for a specific developer within a date range.
-     *
-     * Used for individual developer performance reviews and workload analysis.
-     *
-     * @param developerUuid The developer's UUID
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return List of analytics records for the developer, ordered by date
-     */
-    List<BugAnalytics> findByDeveloperUuidAndAnalyticsDateBetweenOrderByAnalyticsDateAsc(
-            String developerUuid,
-            LocalDate startDate,
-            LocalDate endDate
-    );
-
-    /**
-     * Calculate total bugs opened within a date range.
-     *
-     * Aggregates bugsOpened across all records in the range.
-     * Used for summary statistics and high-level reporting.
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return Sum of all bugs opened, or 0 if no records exist
-     */
-    @Query("SELECT COALESCE(SUM(ba.bugsOpened), 0) FROM BugAnalytics ba " +
-            "WHERE ba.analyticsDate BETWEEN :startDate AND :endDate")
-    Long getTotalBugsOpenedInRange(
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
-    );
-
-    /**
-     * Calculate total bugs closed within a date range.
-     *
-     * Aggregates bugsClosed across all records in the range.
-     * Used for summary statistics and throughput analysis.
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return Sum of all bugs closed, or 0 if no records exist
-     */
-    @Query("SELECT COALESCE(SUM(ba.bugsClosed), 0) FROM BugAnalytics ba " +
-            "WHERE ba.analyticsDate BETWEEN :startDate AND :endDate")
-    Long getTotalBugsClosedInRange(
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
-    );
-
-    /**
-     * Calculate average resolution time across a date range.
-     *
-     * Computes the mean of averageResolutionTimeHours across all records.
-     * Useful for tracking efficiency trends over time.
-     *
-     * @param startDate Start of date range (inclusive)
-     * @param endDate End of date range (inclusive)
-     * @return Average resolution time in hours, or null if no data
-     */
-    @Query("SELECT AVG(ba.averageResolutionTimeHours) FROM BugAnalytics ba " +
-            "WHERE ba.analyticsDate BETWEEN :startDate AND :endDate " +
-            "AND ba.averageResolutionTimeHours IS NOT NULL")
-    Double getAverageResolutionTimeInRange(
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
-    );
+    @Query("SELECT ba FROM BugAnalytics ba WHERE ba.projectId = :projectId " +
+            "AND ba.createdAt >= :startDate AND ba.createdAt <= :endDate " +
+            "ORDER BY ba.createdAt ASC")
+    List<BugAnalytics> getResolutionTimeTrend(
+            @Param("projectId") String projectId,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 }

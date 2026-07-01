@@ -1,0 +1,17 @@
+com\bugai\notificationservice\exception\InvalidNotificationRequestException.class
+com\bugai\notificationservice\enums\NotificationStatus.class
+com\bugai\notificationservice\NotificationServiceApplication.class
+com\bugai\notificationservice\service\NotificationServiceImpl.class
+com\bugai\notificationservice\entity\Notification.class
+com\bugai\notificationservice\exception\GlobalExceptionHandler.class
+com\bugai\notificationservice\controller\NotificationController.class
+com\bugai\notificationservice\enums\NotificationType.class
+com\bugai\notificationservice\dto\NotificationResponse$NotificationResponseBuilder.class
+com\bugai\notificationservice\service\NotificationService.class
+com\bugai\notificationservice\repository\NotificationRepository.class
+com\bugai\notificationservice\dto\NotificationRequest$NotificationRequestBuilder.class
+com\bugai\notificationservice\entity\Notification$NotificationBuilder.class
+com\bugai\notificationservice\exception\NotificationNotFoundException.class
+com\bugai\notificationservice\dto\NotificationRequest.class
+com\bugai\notificationservice\dto\NotificationResponse.class
+com\bugai\notificationservice\enums\NotificationChannel.class

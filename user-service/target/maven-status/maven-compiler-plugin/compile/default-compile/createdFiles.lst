@@ -1,1 +1,15 @@
+com\bugai\userservice\enums\Role.class
+com\bugai\userservice\repository\UserRepository.class
+com\bugai\userservice\exception\DuplicateEmailException.class
+com\bugai\userservice\entity\User.class
+com\bugai\userservice\service\UserServiceImpl.class
+com\bugai\userservice\exception\GlobalExceptionHandler.class
+com\bugai\userservice\entity\User$UserBuilder.class
 com\bugai\userservice\UserServiceApplication.class
+com\bugai\userservice\dto\UpdateUserRequest.class
+com\bugai\userservice\service\UserService.class
+com\bugai\userservice\dto\UserResponse.class
+com\bugai\userservice\exception\UserNotFoundException.class
+com\bugai\userservice\dto\CreateUserRequest.class
+com\bugai\userservice\controller\UserController.class
+com\bugai\userservice\dto\UserResponse$UserResponseBuilder.class

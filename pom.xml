@@ -60,12 +60,14 @@
         <module>bug-service</module>
         <module>notification-service</module>
         <module>analytics-service</module>
+        <module>file-service</module>
+        <module>ml-service</module>
 
         <!--
          <module>bug-service</module>
 
-         <module>ml-service</module>
-         <module>file-service</module>
+
+
          <module>search-service</module>
          <module>api-gateway</module>
 

@@ -1,10 +1,7 @@
 package com.bugai.analyticsservice.exception;
 
-
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,158 +11,85 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Global exception handler for the Analytics Service.
- *
- * Catches exceptions thrown by controllers and service layer,
- * then converts them into standardized HTTP responses.
- *
- * @RestControllerAdvice applies this handler to all @RestController classes
- * in the application, ensuring consistent error responses across all endpoints.
- *
- * Benefits:
- * - Centralized error handling (no try-catch in controllers)
- * - Consistent error response format for clients
- * - Proper HTTP status codes for different error types
- * - Detailed logging for debugging
+ * Global exception handler for Analytics Service.
+ * Centralized error response formatting across all endpoints.
  */
 @RestControllerAdvice
-@Slf4j
 public class GlobalExceptionHandler {
 
     /**
-     * Handle ResourceNotFoundException.
+     * Handle AnalyticsNotFoundException (404).
+     * Triggered when querying for non-existent analytics records.
      *
-     * Thrown when:
-     * - Analytics record not found by ID
-     * - Analytics not found for specific date/project/team/developer
-     *
-     * Returns HTTP 404 Not Found with error details.
-     *
-     * @param ex The caught exception
-     * @return ResponseEntity with error details and HTTP 404
+     * @param ex The exception thrown
+     * @return Error response with 404 status
      */
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(
-            ResourceNotFoundException ex) {
-        log.error("Resource not found: {}", ex.getMessage());
-
-        // Build standardized error response
-        return build(
-                HttpStatus.NOT_FOUND,
-                "Resource Not Found",
+    @ExceptionHandler(AnalyticsNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleAnalyticsNotFoundException(AnalyticsNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(build(
+                HttpStatus.NOT_FOUND.value(),
+                "Analytics Not Found",
                 ex.getMessage()
-        );
+        ));
     }
 
     /**
-     * Handle MethodArgumentNotValidException.
+     * Handle validation exceptions (400).
+     * Triggered when request DTOs fail @Valid annotation validation.
      *
-     * Thrown automatically by Spring when @Valid validation fails on request DTOs.
-     * For example: missing required fields, invalid date formats, etc.
-     *
-     * Returns HTTP 400 Bad Request with detailed field-level errors.
-     *
-     * @param ex The caught validation exception
-     * @return ResponseEntity with validation errors and HTTP 400
+     * @param ex The exception thrown
+     * @return Error response with 400 status and field-level error details
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationException(
-            MethodArgumentNotValidException ex) {
-        log.error("Validation failed: {}", ex.getMessage());
+    public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
 
-        // Extract field-specific errors from exception
-        // Each field that failed validation gets its own error message
-        Map<String, String> fieldErrors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            fieldErrors.put(fieldName, errorMessage);
-        });
-
-        // Build response with all validation errors
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
-        errorResponse.put("error", "Validation Failed");
-        errorResponse.put("fieldErrors", fieldErrors);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
-    /**
-     * Handle IllegalArgumentException.
-     *
-     * Thrown when service layer detects invalid business logic conditions.
-     * For example: end date before start date, invalid date range, etc.
-     *
-     * Returns HTTP 400 Bad Request.
-     *
-     * @param ex The caught exception
-     * @return ResponseEntity with error details and HTTP 400
-     */
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(
-            IllegalArgumentException ex) {
-        log.error("Illegal argument: {}", ex.getMessage());
-
-        return build(
-                HttpStatus.BAD_REQUEST,
-                "Invalid Request",
-                ex.getMessage()
+        // Extract field-level validation errors
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage())
         );
+
+        Map<String, Object> response = build(
+                HttpStatus.BAD_REQUEST.value(),
+                "Validation Failed",
+                "Request validation failed"
+        );
+        response.put("fieldErrors", errors);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     /**
-     * Handle all other unexpected exceptions.
+     * Handle all other exceptions (500).
+     * Catch-all for unexpected runtime exceptions.
      *
-     * This is a catch-all for any exceptions not handled by specific handlers above.
-     * Ensures clients always get a proper error response, never raw stack traces.
-     *
-     * Returns HTTP 500 Internal Server Error.
-     *
-     * @param ex The caught exception
-     * @return ResponseEntity with generic error message and HTTP 500
+     * @param ex The exception thrown
+     * @return Error response with 500 status
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        log.error("Unexpected error occurred: {}", ex.getMessage(), ex);
-
-        return build(
-                HttpStatus.INTERNAL_SERVER_ERROR,
+    public ResponseEntity<Map<String, Object>> handleGlobalException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(build(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal Server Error",
-                "An unexpected error occurred. Please try again later."
-        );
+                ex.getMessage() != null ? ex.getMessage() : "An unexpected error occurred"
+        ));
     }
 
     /**
-     * Private helper method to build standardized error response.
+     * Private helper method to build consistent error response structure.
+     * Reduces code duplication in exception handlers.
      *
-     * Creates a consistent JSON structure for all error responses:
-     * {
-     *   "timestamp": "2024-01-15T10:30:00",
-     *   "status": 404,
-     *   "error": "Resource Not Found",
-     *   "message": "Analytics not found for date: 2024-01-15"
-     * }
-     *
-     * This pattern is used across all services in BugAI Tracker for consistency.
-     *
-     * Note: This is a different "build" concept than Lombok's builder() pattern.
-     * This is a custom helper method for error response construction.
-     *
-     * @param status HTTP status code to return
-     * @param error Short error type description
+     * @param status HTTP status code
+     * @param error Error type/title
      * @param message Detailed error message
-     * @return ResponseEntity with error details and specified status
+     * @return Map containing error details
      */
-    private ResponseEntity<Map<String, Object>> build(
-            HttpStatus status, String error, String message) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", status.value());
-        errorResponse.put("error", error);
-        errorResponse.put("message", message);
-
-        return ResponseEntity.status(status).body(errorResponse);
+    private Map<String, Object> build(int status, String error, String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", status);
+        response.put("error", error);
+        response.put("message", message);
+        response.put("timestamp", LocalDateTime.now());
+        return response;
     }
 }
